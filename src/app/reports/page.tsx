@@ -14,7 +14,6 @@ import {
   getQuotations,
 } from '@/lib/data-service';
 import {
-  formatCurrency,
   calculateOverdueDays,
   exportToExcel,
 } from '@/lib/export-excel';

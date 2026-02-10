@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,7 +33,7 @@ import { getCustomers, createCustomer, getOrders, getPayments } from '@/lib/data
 import { Customer, Order, Payment } from '@/types/database';
 import { formatCurrency, getStatusColor, exportToExcel } from '@/lib/export-excel';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Search, PlusCircle, Users, Eye } from 'lucide-react';
+import { Download, Search, PlusCircle, Eye } from 'lucide-react';
 
 export default function CustomersPage() {
   const { toast } = useToast();
@@ -44,7 +44,6 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
   const [countryFilter, setCountryFilter] = useState('all');
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [saving, setSaving] = useState(false);
 
   const [newCustomer, setNewCustomer] = useState({
@@ -435,7 +434,7 @@ export default function CustomersPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setSelectedCustomer(customer)}
+                              onClick={() => {}}
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
