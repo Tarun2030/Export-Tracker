@@ -99,6 +99,7 @@ src/
 │   ├── dashboard/       # Dashboard page
 │   ├── orders/
 │   │   ├── new/         # Add new order form
+│   │   ├── [id]/edit/   # Edit existing order
 │   │   └── list/        # Order list with filters
 │   ├── payments/        # Payment tracker with aging
 │   ├── shipments/       # Shipment tracking
@@ -107,10 +108,11 @@ src/
 │   └── inquiries/       # Inquiries & quotations
 ├── components/
 │   ├── layout/          # Sidebar, Header
+│   ├── orders/          # Shared OrderForm component
 │   └── ui/              # shadcn/ui components
 ├── lib/
-│   ├── supabase.ts      # Supabase client
-│   ├── data-service.ts  # Data access layer
+│   ├── supabase.ts      # Supabase client + mode resolution
+│   ├── data-service.ts  # Data access layer (demo/live)
 │   ├── demo-data.ts     # Demo/sample data
 │   ├── export-excel.ts  # Excel export & utilities
 │   └── utils.ts         # Tailwind utilities
@@ -118,6 +120,16 @@ src/
 │   └── database.ts      # TypeScript interfaces
 └── hooks/
     └── use-toast.ts     # Toast notifications
+
+docs/
+├── deployment-runbook.md      # Build, deploy & operate
+├── validation-checklist.md    # E2E test checklist
+├── production-guardrails.md   # Security & access controls
+└── investor-release.md        # Investor-ready summary
+
+supabase/migrations/
+├── 001_initial_schema.sql     # Tables, indexes, triggers
+└── 002_rls_hardening.sql      # Auth-gated RLS policies
 ```
 
 ## License
