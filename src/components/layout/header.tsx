@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { getOrders } from '@/lib/data-service';
 import { getLCExpiryAlert } from '@/lib/export-excel';
+import { isDemoMode } from '@/lib/supabase';
 import { Order } from '@/types/database';
 
 interface LCAlert {
@@ -81,9 +82,11 @@ export default function Header() {
           )}
         </div>
 
-        <Badge variant="outline" className="text-xs hidden sm:inline-flex">
-          Demo Mode
-        </Badge>
+        {isDemoMode && (
+          <Badge variant="outline" className="text-xs hidden sm:inline-flex">
+            Demo Mode
+          </Badge>
+        )}
       </div>
     </header>
   );
