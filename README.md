@@ -50,6 +50,7 @@ npm install
 cp .env.local.example .env.local
 
 # Edit .env.local with your Supabase credentials (optional)
+# NEXT_PUBLIC_APP_MODE=demo
 # NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 # NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
@@ -62,7 +63,7 @@ npm run dev
 1. Create a new Supabase project at [supabase.com](https://supabase.com)
 2. Go to SQL Editor and run the migration file: `supabase/migrations/001_initial_schema.sql`
 3. Copy your project URL and anon key from Settings > API
-4. Add them to `.env.local`
+4. Add them to `.env.local` and set `NEXT_PUBLIC_APP_MODE=live`
 
 Without Supabase configured, the app runs in **Demo Mode** with sample data for all features.
 
