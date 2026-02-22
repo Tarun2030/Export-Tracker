@@ -9,7 +9,6 @@ const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
 });
-
 export const metadata: Metadata = {
   title: 'Export Tracker - Export Business Management System',
   description: 'Complete export tracking system for managing orders, payments, shipments, and customers',

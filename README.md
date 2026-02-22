@@ -50,6 +50,7 @@ npm install
 cp .env.local.example .env.local
 
 # Edit .env.local with your Supabase credentials (optional)
+# NEXT_PUBLIC_APP_MODE=demo
 # NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 # NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
@@ -62,7 +63,7 @@ npm run dev
 1. Create a new Supabase project at [supabase.com](https://supabase.com)
 2. Go to SQL Editor and run the migration file: `supabase/migrations/001_initial_schema.sql`
 3. Copy your project URL and anon key from Settings > API
-4. Add them to `.env.local`
+4. Add them to `.env.local` and set `NEXT_PUBLIC_APP_MODE=live`
 
 Without Supabase configured, the app runs in **Demo Mode** with sample data for all features.
 
@@ -98,6 +99,7 @@ src/
 │   ├── dashboard/       # Dashboard page
 │   ├── orders/
 │   │   ├── new/         # Add new order form
+│   │   ├── [id]/edit/   # Edit existing order
 │   │   └── list/        # Order list with filters
 │   ├── payments/        # Payment tracker with aging
 │   ├── shipments/       # Shipment tracking
@@ -106,10 +108,11 @@ src/
 │   └── inquiries/       # Inquiries & quotations
 ├── components/
 │   ├── layout/          # Sidebar, Header
+│   ├── orders/          # Shared OrderForm component
 │   └── ui/              # shadcn/ui components
 ├── lib/
-│   ├── supabase.ts      # Supabase client
-│   ├── data-service.ts  # Data access layer
+│   ├── supabase.ts      # Supabase client + mode resolution
+│   ├── data-service.ts  # Data access layer (demo/live)
 │   ├── demo-data.ts     # Demo/sample data
 │   ├── export-excel.ts  # Excel export & utilities
 │   └── utils.ts         # Tailwind utilities
@@ -117,6 +120,16 @@ src/
 │   └── database.ts      # TypeScript interfaces
 └── hooks/
     └── use-toast.ts     # Toast notifications
+
+docs/
+├── deployment-runbook.md      # Build, deploy & operate
+├── validation-checklist.md    # E2E test checklist
+├── production-guardrails.md   # Security & access controls
+└── investor-release.md        # Investor-ready summary
+
+supabase/migrations/
+├── 001_initial_schema.sql     # Tables, indexes, triggers
+└── 002_rls_hardening.sql      # Auth-gated RLS policies
 ```
 
 ## License

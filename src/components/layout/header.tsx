@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { isDemoMode } from '@/lib/supabase';
 
 export default function Header() {
   return (
@@ -10,9 +11,11 @@ export default function Header() {
         Export Business Management
       </h2>
       <div className="flex items-center gap-3">
-        <Badge variant="outline" className="text-xs hidden sm:inline-flex">
-          Demo Mode
-        </Badge>
+        {isDemoMode && (
+          <Badge variant="outline" className="text-xs hidden sm:inline-flex">
+            Demo Mode
+          </Badge>
+        )}
       </div>
     </header>
   );

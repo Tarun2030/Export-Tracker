@@ -181,6 +181,7 @@ export default function OrderListPage() {
                   <TableHead>Terms</TableHead>
                   <TableHead>LC Alert</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -233,12 +234,17 @@ export default function OrderListPage() {
                           {order.status.replace(/_/g, ' ')}
                         </Badge>
                       </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/orders/${order.id}/edit`}>Edit</Link>
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
                 {filteredOrders.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={10} className="text-center py-8 text-slate-500">
                       No orders found
                     </TableCell>
                   </TableRow>

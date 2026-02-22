@@ -1,18 +1,15 @@
-import supabase from './supabase';
+import supabase, { isLiveMode } from './supabase';
 import { Customer, Order, Payment, Shipment, Inquiry, Quotation, DashboardStats, AgingBucket } from '@/types/database';
 import { demoCustomers, demoOrders, demoPayments, demoShipments, demoInquiries, demoQuotations } from './demo-data';
 import { calculateOverdueDays } from './export-excel';
 
-// Check if Supabase is configured
-const isSupabaseConfigured = () => {
-  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-};
+const shouldUseDemoData = () => !isLiveMode;
 
 // ============================================
 // CUSTOMERS
 // ============================================
 export async function getCustomers(): Promise<Customer[]> {
-  if (!isSupabaseConfigured()) return demoCustomers;
+  if (shouldUseDemoData()) return demoCustomers;
 
   const { data, error } = await supabase
     .from('customers')
@@ -24,7 +21,7 @@ export async function getCustomers(): Promise<Customer[]> {
 }
 
 export async function getCustomer(id: string): Promise<Customer | null> {
-  if (!isSupabaseConfigured()) return demoCustomers.find((c) => c.id === id) || null;
+  if (shouldUseDemoData()) return demoCustomers.find((c) => c.id === id) || null;
 
   const { data, error } = await supabase
     .from('customers')
@@ -37,7 +34,7 @@ export async function getCustomer(id: string): Promise<Customer | null> {
 }
 
 export async function createCustomer(customer: Partial<Customer>): Promise<Customer> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newCustomer = { ...customer, id: `c${Date.now()}`, created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as Customer;
     demoCustomers.push(newCustomer);
     return newCustomer;
@@ -54,7 +51,7 @@ export async function createCustomer(customer: Partial<Customer>): Promise<Custo
 }
 
 export async function updateCustomer(id: string, updates: Partial<Customer>): Promise<Customer> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoCustomers.findIndex((c) => c.id === id);
     if (idx !== -1) Object.assign(demoCustomers[idx], updates);
     return demoCustomers[idx];
@@ -72,7 +69,7 @@ export async function updateCustomer(id: string, updates: Partial<Customer>): Pr
 }
 
 export async function deleteCustomer(id: string): Promise<void> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoCustomers.findIndex((c) => c.id === id);
     if (idx !== -1) demoCustomers.splice(idx, 1);
     return;
@@ -86,7 +83,7 @@ export async function deleteCustomer(id: string): Promise<void> {
 // ORDERS
 // ============================================
 export async function getOrders(): Promise<Order[]> {
-  if (!isSupabaseConfigured()) return demoOrders;
+  if (shouldUseDemoData()) return demoOrders;
 
   const { data, error } = await supabase
     .from('orders')
@@ -98,7 +95,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function getOrder(id: string): Promise<Order | null> {
-  if (!isSupabaseConfigured()) return demoOrders.find((o) => o.id === id) || null;
+  if (shouldUseDemoData()) return demoOrders.find((o) => o.id === id) || null;
 
   const { data, error } = await supabase
     .from('orders')
@@ -111,7 +108,7 @@ export async function getOrder(id: string): Promise<Order | null> {
 }
 
 export async function createOrder(order: Partial<Order>): Promise<Order> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newOrder = {
       ...order,
       id: `o${Date.now()}`,
@@ -134,7 +131,7 @@ export async function createOrder(order: Partial<Order>): Promise<Order> {
 }
 
 export async function updateOrder(id: string, updates: Partial<Order>): Promise<Order> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoOrders.findIndex((o) => o.id === id);
     if (idx !== -1) Object.assign(demoOrders[idx], updates);
     return demoOrders[idx];
@@ -152,7 +149,7 @@ export async function updateOrder(id: string, updates: Partial<Order>): Promise<
 }
 
 export async function deleteOrder(id: string): Promise<void> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoOrders.findIndex((o) => o.id === id);
     if (idx !== -1) demoOrders.splice(idx, 1);
     return;
@@ -166,7 +163,7 @@ export async function deleteOrder(id: string): Promise<void> {
 // PAYMENTS
 // ============================================
 export async function getPayments(): Promise<Payment[]> {
-  if (!isSupabaseConfigured()) return demoPayments;
+  if (shouldUseDemoData()) return demoPayments;
 
   const { data, error } = await supabase
     .from('payments')
@@ -178,7 +175,7 @@ export async function getPayments(): Promise<Payment[]> {
 }
 
 export async function createPayment(payment: Partial<Payment>): Promise<Payment> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newPayment = { ...payment, id: `p${Date.now()}`, created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as Payment;
     demoPayments.push(newPayment);
     return newPayment;
@@ -195,7 +192,7 @@ export async function createPayment(payment: Partial<Payment>): Promise<Payment>
 }
 
 export async function updatePayment(id: string, updates: Partial<Payment>): Promise<Payment> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoPayments.findIndex((p) => p.id === id);
     if (idx !== -1) Object.assign(demoPayments[idx], updates);
     return demoPayments[idx];
@@ -216,7 +213,7 @@ export async function updatePayment(id: string, updates: Partial<Payment>): Prom
 // SHIPMENTS
 // ============================================
 export async function getShipments(): Promise<Shipment[]> {
-  if (!isSupabaseConfigured()) return demoShipments;
+  if (shouldUseDemoData()) return demoShipments;
 
   const { data, error } = await supabase
     .from('shipments')
@@ -228,7 +225,7 @@ export async function getShipments(): Promise<Shipment[]> {
 }
 
 export async function createShipment(shipment: Partial<Shipment>): Promise<Shipment> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newShipment = { ...shipment, id: `s${Date.now()}`, created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as Shipment;
     demoShipments.push(newShipment);
     return newShipment;
@@ -245,7 +242,7 @@ export async function createShipment(shipment: Partial<Shipment>): Promise<Shipm
 }
 
 export async function updateShipment(id: string, updates: Partial<Shipment>): Promise<Shipment> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const idx = demoShipments.findIndex((s) => s.id === id);
     if (idx !== -1) Object.assign(demoShipments[idx], updates);
     return demoShipments[idx];
@@ -266,7 +263,7 @@ export async function updateShipment(id: string, updates: Partial<Shipment>): Pr
 // INQUIRIES
 // ============================================
 export async function getInquiries(): Promise<Inquiry[]> {
-  if (!isSupabaseConfigured()) return demoInquiries;
+  if (shouldUseDemoData()) return demoInquiries;
 
   const { data, error } = await supabase
     .from('inquiries')
@@ -278,7 +275,7 @@ export async function getInquiries(): Promise<Inquiry[]> {
 }
 
 export async function createInquiry(inquiry: Partial<Inquiry>): Promise<Inquiry> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newInquiry = { ...inquiry, id: `inq${Date.now()}`, created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as Inquiry;
     demoInquiries.push(newInquiry);
     return newInquiry;
@@ -298,7 +295,7 @@ export async function createInquiry(inquiry: Partial<Inquiry>): Promise<Inquiry>
 // QUOTATIONS
 // ============================================
 export async function getQuotations(): Promise<Quotation[]> {
-  if (!isSupabaseConfigured()) return demoQuotations;
+  if (shouldUseDemoData()) return demoQuotations;
 
   const { data, error } = await supabase
     .from('quotations')
@@ -310,7 +307,7 @@ export async function getQuotations(): Promise<Quotation[]> {
 }
 
 export async function createQuotation(quotation: Partial<Quotation>): Promise<Quotation> {
-  if (!isSupabaseConfigured()) {
+  if (shouldUseDemoData()) {
     const newQuotation = { ...quotation, id: `q${Date.now()}`, created_at: new Date().toISOString(), updated_at: new Date().toISOString() } as Quotation;
     demoQuotations.push(newQuotation);
     return newQuotation;
