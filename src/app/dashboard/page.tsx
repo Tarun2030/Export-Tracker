@@ -12,12 +12,11 @@ import {
   Users,
   FileText,
   TrendingUp,
-  AlertTriangle,
   ArrowRight,
 } from 'lucide-react';
 import { getDashboardStats, getOrders, getPayments, getShipments } from '@/lib/data-service';
 import { DashboardStats, Order, Payment, Shipment } from '@/types/database';
-import { formatCurrency, formatDate, getStatusColor, calculateOverdueDays, getLCExpiryAlert } from '@/lib/export-excel';
+import { formatCurrency, formatDate, getStatusColor, calculateOverdueDays } from '@/lib/export-excel';
 import Link from 'next/link';
 
 export default function DashboardPage() {
@@ -25,7 +24,6 @@ export default function DashboardPage() {
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [overduePayments, setOverduePayments] = useState<Payment[]>([]);
   const [activeShipments, setActiveShipments] = useState<Shipment[]>([]);
-  const [lcAlerts, setLcAlerts] = useState<{ order: Order; message: string; color: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,14 +44,6 @@ export default function DashboardPage() {
             .sort((a, b) => calculateOverdueDays(b.payment_due_date) - calculateOverdueDays(a.payment_due_date))
         );
         setActiveShipments(shipments.filter((s) => s.status === 'in_transit' || s.status === 'loaded'));
-
-        // LC alerts
-        const alerts: { order: Order; message: string; color: string }[] = [];
-        orders.forEach((order) => {
-          const alert = getLCExpiryAlert(order.lc_expiry_date);
-          if (alert) alerts.push({ order, ...alert });
-        });
-        setLcAlerts(alerts);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -79,24 +69,6 @@ export default function DashboardPage() {
         <p className="text-sm text-slate-500 mt-1">Overview of your export business</p>
       </div>
 
-      {/* LC Expiry Alerts */}
-      {lcAlerts.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            <h3 className="font-semibold text-red-800">LC Expiry Alerts</h3>
-          </div>
-          <div className="space-y-1">
-            {lcAlerts.map((alert, idx) => (
-              <p key={idx} className={`text-sm ${alert.color} px-2 py-1 rounded`}>
-                <span className="font-medium">{alert.order.order_number}</span> &mdash;{' '}
-                {alert.order.customer?.company_name}: {alert.message}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-l-4 border-l-blue-500">
@@ -110,7 +82,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className={`border-l-4 ${stats?.overduePayments ? 'border-l-red-500' : 'border-l-yellow-500'}`}>
+        <Link href="/payments" className="block">
+        <Card className={`border-l-4 ${stats?.overduePayments ? 'border-l-red-500' : 'border-l-yellow-500'} hover:shadow-md transition-shadow cursor-pointer`}>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-600">Pending Payments</CardTitle>
             <CreditCard className={`h-5 w-5 ${stats?.overduePayments ? 'text-red-500' : 'text-yellow-500'}`} />
@@ -128,6 +101,7 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
+        </Link>
 
         <Card className="border-l-4 border-l-purple-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -200,7 +174,11 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-3">
               {recentOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <Link
+                  key={order.id}
+                  href="/orders/list"
+                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                >
                   <div>
                     <p className="text-sm font-medium">{order.order_number}</p>
                     <p className="text-xs text-slate-500">{order.customer?.company_name || 'N/A'}</p>
@@ -211,7 +189,7 @@ export default function DashboardPage() {
                       {order.status.replace(/_/g, ' ')}
                     </Badge>
                   </div>
-                </div>
+                </Link>
               ))}
               {recentOrders.length === 0 && (
                 <p className="text-sm text-slate-500 text-center py-4">No orders yet</p>
@@ -236,9 +214,10 @@ export default function DashboardPage() {
                 const days = calculateOverdueDays(payment.payment_due_date);
                 const outstanding = payment.invoice_amount - payment.amount_received;
                 return (
-                  <div
+                  <Link
                     key={payment.id}
-                    className={`flex items-center justify-between p-3 rounded-lg ${
+                    href="/payments"
+                    className={`flex items-center justify-between p-3 rounded-lg hover:opacity-80 transition-opacity ${
                       days > 60 ? 'bg-red-50 border border-red-200' : days > 30 ? 'bg-orange-50 border border-orange-200' : 'bg-yellow-50 border border-yellow-200'
                     }`}
                   >
@@ -252,7 +231,7 @@ export default function DashboardPage() {
                         {days} days overdue
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
               {overduePayments.length === 0 && (

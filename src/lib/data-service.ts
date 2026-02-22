@@ -5,7 +5,7 @@ import { calculateOverdueDays } from './export-excel';
 
 // Check if Supabase is configured
 const isSupabaseConfigured = () => {
-  return typeof window !== 'undefined';
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 };
 
 // ============================================
